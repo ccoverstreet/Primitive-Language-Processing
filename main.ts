@@ -26,20 +26,17 @@ function turn_on_lights() {
 const actions: any = [
 	{
 		"name": "greeting",
-		"activation_phrase": "hi",
-		"activation": [],
+		"activation": [1, 0, 0, 0, 0],
 		"function": greeting
 	},
 	{
 		"name": "farewell",
-		"activation_phrase": "bye",
-		"activation": [],
+		"activation": [0, 1, 0, 0, 0],
 		"function": farewell
 	},
 	{
 		"name": "turn_on_lights",
-		"activation_phrase": "turn on lights",
-		"activation": [],
+		"activation": [0, 0, 1, 1, 0],
 		"function": turn_on_lights
 	}
 ]
@@ -49,11 +46,6 @@ function parse_activation_phrase(actions: any) {
 		
 	}
 }
-
-actions = parse_activation_phrase(actions) {
-
-}
-
 
 function add_vector(intent_vector: any, word_vector: any) {
 	if (word_vector != undefined) {
@@ -82,15 +74,25 @@ function determine_action(intent_vector: any) {
 	var required_actions = [];
 
 	for (var i = 0; i < actions.length; i++) {
+		console.log("Checking Action");
 		var abs_diff = 0;
+		var should_continue = false;
 		for (var j = 0; j < intent_vector.length; j++) {
 			abs_diff += Math.abs(intent_vector[j] - actions[i].activation[j]);
+			console.log(intent_vector[j], actions[i].activation[j]);
 			if (intent_vector[j] < actions[i].activation[j]) {
-				continue;
+				should_continue = true;
+				break;
 			}
 		}
+
+		if (should_continue) {
+			continue;
+		}
+
+		console.log("FART");
 		
-		if (abs_diff < 1.5) {
+		if (abs_diff < 10) {
 			required_actions.push(i);
 		}
 	}
